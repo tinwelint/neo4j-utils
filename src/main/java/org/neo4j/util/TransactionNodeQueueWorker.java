@@ -30,11 +30,14 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.transaction.TransactionManager;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.DeadlockDetectedException;
-import org.neo4j.kernel.impl.transaction.UserTransactionImpl;
+import org.neo4j.kernel.GraphDatabaseSPI;
+import org.neo4j.kernel.impl.transaction.TxManager;
 import org.neo4j.util.TransactionNodeQueue.TxQueue;
 
 /**
@@ -97,7 +100,8 @@ public abstract class TransactionNodeQueueWorker extends Thread
 	
 	private int findTxId()
 	{
-	    return new UserTransactionImpl( graphDb ).getEventIdentifier();
+	    TransactionManager txManager = ((GraphDatabaseSPI)graphDb).getTxManager();
+	    return ((TxManager)txManager).getEventIdentifier();
 	}
 
 	protected TransactionNodeQueue getQueue()

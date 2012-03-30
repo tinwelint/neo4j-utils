@@ -188,13 +188,12 @@ public class GraphDatabaseUtil
 	
 	public static LockManager getLockManager( GraphDatabaseService graphDb )
 	{
-        return ( ( EmbeddedGraphDatabase ) graphDb ).getConfig().getLockManager();
+        return ( ( EmbeddedGraphDatabase ) graphDb ).getLockManager();
 	}
 	
 	public TransactionManager getTransactionManager()
 	{
-		return ( ( EmbeddedGraphDatabase )
-			graphDb() ).getConfig().getTxModule().getTxManager();
+		return ( ( EmbeddedGraphDatabase ) graphDb() ).getTxManager();
 	}
 	
 	public static Object[] propertyValueAsArray( Object propertyValue )
