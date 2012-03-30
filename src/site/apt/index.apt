@@ -1,0 +1,84 @@
+Neo4j Utilities
+
+	This is a collection of useful utilities on top of Neo4j which you
+	very often find yourself needing, but you can't (as of yet) find in
+	the core neo API. The base package is <<org.neo4j.util>> and holds a
+	big variety of utilities, f.ex. utilities for easy handling of array
+	properties and a java Collection implementation of some neo concepts.
+	
+GraphDatabaseServiceLifecycle
+
+	The <<org.neo4j.util.GraphDatabaseServiceLifecycle>> class makes it easier to
+	manage your GraphDatabaseService and additional components (such as an IndexService)
+	in one place without having to care about shutting down the Neo4j graph database
+	and its when the JVM exits.
+	
+	So this code:
+	
+%{source-code|snippet=graphDbLifecycleUsage|file=src/test/java/examples/SiteExamples.java}
+
+	Will replace code like:
+	
+%{source-code|snippet=graphDbLifecycleReplaces|file=src/test/java/examples/SiteExamples.java}
+
+GraphDatabaseUtil class
+
+	The <<org.neo4j.util.GraphDatabaseUtil>> class is a blob class with many very useful
+	methods, f.ex: methods for handling array values
+	
+%{source-code|snippet=handleArrayValues|file=src/test/java/examples/SiteExamples.java}
+
+	Often in a Neo4j graph you have some sort of sub-reference nodes
+	connected to the reference node (f.ex. one which all users are
+	connected to). To {{{http://components.neo4j.org/neo4j-utils/apidocs/org/neo4j/util/GraphDatabaseUtil.html#getOrCreateSubReferenceNode(org.neo4j.graphdb.RelationshipType)}get or create}}
+	(if it didn't exist) such a reference node:
+
+NodeWrapper
+
+	It is a common concept that an application adds a business layer where
+	there are objects which wraps nodes, for that there are the convenient
+	interface <<NodeWrapper>>.
+
+Collection implementations
+
+	There are several implementations of the collection API. The concept here is
+	that you have a node and its relationships (of some specified type) which
+	represents its items. So adding and removing items to the collection is
+	handled underneath by creating and deleting relationships from that node
+	to the supplied nodes, f.ex:
+
+%{source-code|snippet=nodeWrapperSetUsage|file=src/test/java/examples/SiteExamples.java}
+
+Link
+
+	{{{http://components.neo4j.org/neo4j-utils/apidocs/org/neo4j/util/Link.html}Convenience class}}
+	for where there might be zero or one relationship between two nodes. It manages such a
+	relationship. There's an implementation of a NodeWrapperLink so that you can manage
+	a relationship between two domain objects.
+
+Migration
+
+	When code is under development and node/relationship layout is altered over
+	time and there's a Neo4j store which is undesired to be rebuilt from scratch
+	each time such a structural modification occurs, the migration framework may
+	be used. There's a notion of two versions, one version for the code and one
+	for the data in the Neo4j store. For each version there is a migrator which
+	iterates over the Neo4j store and alters what needs to be altered for the
+	Neo4j store to be able to call itself a certain version. So if a structural
+	modification occurs in the code, an integer (in a subclass of
+	<<org.neo4j.util.Migration>>) is incremented and a new class implementing
+	<<org.neo4j.util.Migrator>> is written. The next time Neo4j is started the
+	migration framework will notice the differentiating versions and run the
+	appropriate migrators.
+	
+%{source-code|snippet=migration|file=src/test/java/examples/SiteExamples.java}
+
+	To use the migration framework, just have it sync the versions after a
+	GraphDatabaseService has been started.
+
+%{source-code|snippet=syncVersions|file=src/test/java/examples/SiteExamples.java}
+
+	Remember that the first time a <syncVersion> is performed on a Neo4j store
+	the version is set to that of returned from <getCodeVersion>, unless
+	a call to <setFirstVersionIsAlwaysZero( true )> is made before a call to
+	<syncVersion> is made.
