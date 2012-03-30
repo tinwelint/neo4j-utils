@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.neo4j</groupId>
   <artifactId>neo4j-utils</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.5-SNAPSHOT</version>
   <name>Neo4j - Utilities</name>
   <description>A set of convenience methods and classes built on top of Neo4j.</description>
   <url>http://components.neo4j.org/${project.artifactId}/${project.version}</url>
@@ -17,7 +17,7 @@
   <properties>
     <bundle.namespace>org.neo4j.util</bundle.namespace>
     <short-name>utils</short-name>
-    <neo4j.version>1.4.2</neo4j.version>
+    <neo4j.version>1.5.2</neo4j.version>
   </properties>
 
   <scm>
